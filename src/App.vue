@@ -12,7 +12,11 @@
     </el-header>
 
     <el-main class="main">
-      <router-view />
+      <el-row justify="center" :gutter="0">
+        <el-col :xs="24" :sm="22" :md="20" :lg="18" :xl="16">
+          <router-view />
+        </el-col>
+      </el-row>
     </el-main>
 
     <el-footer class="footer">
