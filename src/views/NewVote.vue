@@ -1,19 +1,8 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import type { FormInstance } from 'element-plus'
-
-type Option = {
-    id: number
-    label: string
-}
-
-type VoteForm = {
-    title: string
-    desc: string
-    startDate: string
-    endDate: string
-    options: Option[]
-}
+import type { VoteForm } from '@/types/vote'
+import { createVote } from '@/apis/votes'
 
 let uid = 0
 const newOption = () => ({
@@ -24,7 +13,8 @@ const newOption = () => ({
 // do not use same name with ref
 const form = reactive<VoteForm>({
     title: '',
-    desc: '',
+    description: '',
+    creatorId: 4,
     startDate: '',
     endDate: '',
     options: [newOption(), newOption()],
@@ -41,8 +31,13 @@ function removeOption(index: number) {
     form.options.splice(index, 1)
 }
 
-const onSubmit = () => {
-    console.log('submit!')
+const onSubmit = async () => {
+    try {
+        const res = await createVote(form)
+        console.log('Vote created successfully:', res)
+    } catch (error) {
+        console.error('Failed to create vote:', error)
+    }
 }
 </script>
 
@@ -53,7 +48,7 @@ const onSubmit = () => {
         </el-form-item>
 
         <el-form-item label="Description">
-            <el-input v-model="form.desc" type="textarea" />
+            <el-input v-model="form.description" type="textarea" />
         </el-form-item>
 
         <el-form-item label="Activity time">
