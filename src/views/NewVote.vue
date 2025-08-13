@@ -62,7 +62,7 @@ const onSubmit = async () => {
         </el-form-item>
 
         <el-form-item label="Options">
-            <div v-for="(opt, idx) in form.options" :key="opt.id">
+            <div v-for="(opt, idx) in form.options" :key="idx">
                 <el-form-item :prop="`options.${idx}.label`">
                     <el-input v-model="opt.label" :placeholder="`Option ${idx + 1}`" clearable />
                 </el-form-item>
