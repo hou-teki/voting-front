@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import type { VoteListItem } from '@/types/vote'
-import { getVoteList } from '@/apis/votes';
+import type { CastVoteResponse, VoteListItem } from '@/types/vote'
+import { castVote, getVoteList } from '@/apis/votes';
+import { ElMessage } from 'element-plus';
+
+const votes = ref<VoteListItem[]>([])
 
 const loading = ref(false)
-const votes = ref<VoteListItem[]>([]);
+const loadingMap = ref<Record<string, boolean>>({})
 
 onMounted(async () => {
     loading.value = true
@@ -17,19 +20,59 @@ onMounted(async () => {
     }
 })
 
+const keyOf = (voteId: number, optionId: number) => {
+    return `${voteId}_${optionId}`
+}
+
+async function handleVote(voteId: number, optionId: number) {
+    const key = keyOf(voteId, optionId)
+    loadingMap.value[key] = true
+
+    try {
+        const res = await castVote({ userId: 4, voteId, optionId })
+
+        // update view
+        applyCastResult(res)
+
+        ElMessage.success('Vote cast successfully.')
+    } catch (error) {
+        ElMessage.error('Failed to cast vote.')
+    } finally {
+        loadingMap.value[key] = false
+    }
+}
+
+function applyCastResult(res: CastVoteResponse) {
+    votes.value = votes.value.map(old => {
+        if (old.id !== res.voteId) return old
+        return { ...old, total: res.total, options: res.options }
+    })
+}
+
+function percent(count: number, total: number): number {
+    return total > 0 ? Math.round((count / total) * 100) : 0
+}
+
 </script>
 
 <template>
-    <el-card v-for="(vote, idx) in votes" :key="idx" shadow="hover">
+    <el-card v-for="vote in votes" :key="vote.id" shadow="hover">
         <template #header>
             <span>{{ vote.title }}</span>
         </template>
+
         <p>{{ vote.description }}</p>
         <p>{{ vote.startDate }} ~ {{ vote.endDate || '-' }}</p>
-        <div>
-            <div v-for="(option, idx) in vote.options" :key="idx">
+
+        <div v-for="option in vote.options" :key="option.id">
+            <el-button type="warning" @click="handleVote(vote.id, option.id)"
+                :loading="loadingMap[keyOf(vote.id, option.id)]">
+                Vote
+            </el-button>
+
+            <div>
                 <span>{{ option.label }}</span>
-                <el-progress :stroke-width="24" :percentage="option.count" />
+                <el-progress :stroke-width="18" :percentage="percent(option.count, vote.total)" />
             </div>
         </div>
     </el-card>
