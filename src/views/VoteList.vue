@@ -17,7 +17,7 @@ onMounted(async () => {
     try {
         votes.value = await getVoteList()
     } catch (error) {
-        console.error('Failed to fetch vote list:', error)
+        ElMessage.error('Failed to fetch vote list.')
     } finally {
         loading.value = false
     }

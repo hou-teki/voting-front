@@ -29,6 +29,16 @@ export type VoteListItem = {
   total: number
 }
 
+export type VoteItemDto = {
+  id: number
+  title: string
+  description: string
+  creatorId: number
+  startDate: string
+  endDate: string
+  options: Option[]
+}
+
 export type CastVoteRequest = {
   userId: number
   voteId: number
