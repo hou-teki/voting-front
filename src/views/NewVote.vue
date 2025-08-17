@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import type { FormInstance } from 'element-plus'
+import { ElMessage, type FormInstance } from 'element-plus'
 import type { VoteForm } from '@/types/vote'
 import { createVote } from '@/apis/votes'
+import { useUserStore } from '@/stores/userStore'
 
 let uid = 0
 const newOption = () => ({
@@ -10,11 +11,12 @@ const newOption = () => ({
     label: '',
 })
 
+const userStore = useUserStore()
+
 // do not use same name with ref
-const form = reactive<VoteForm>({
+const form = reactive({
     title: '',
     description: '',
-    creatorId: 4,
     startDate: '',
     endDate: '',
     options: [newOption(), newOption()],
@@ -27,16 +29,22 @@ function addOption() {
 }
 
 function removeOption(index: number) {
-    if (form.options.length <= 2) return // 保底：至少保留 2 个
+    if (form.options.length <= 2) return // at least 2 options required
     form.options.splice(index, 1)
 }
 
 const onSubmit = async () => {
+    if (!userStore.isLogin || !userStore.id) {
+        ElMessage.error('User not logged in')
+        return
+    }
+
     try {
-        const res = await createVote(form)
-        console.log('Vote created successfully:', res)
+        const formWithCreatorId: VoteForm = { ...form, creatorId: userStore.id }
+        await createVote(formWithCreatorId)
+        ElMessage.success('Vote created successfully')
     } catch (error) {
-        console.error('Failed to create vote:', error)
+        ElMessage.error('Failed to create vote')
     }
 }
 </script>

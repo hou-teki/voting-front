@@ -58,7 +58,7 @@ function percent(count: number, total: number): number {
 <template>
     <el-card v-for="vote in votes" :key="vote.id" shadow="hover">
         <template #header>
-            <span>{{ vote.title }}</span>
+            <h2>{{ vote.title }}</h2>
         </template>
 
         <p>{{ vote.description }}</p>
