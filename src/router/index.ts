@@ -5,6 +5,18 @@ const routes = [
     path: '/',
     redirect: '/votes',
   },
+
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login.vue'),
+  },
+  {
+    path: '/signup',
+    name: 'Signup',
+    component: () => import('../views/Signup.vue'),
+  },
+
   {
     path: '/votes',
     name: 'VoteList',

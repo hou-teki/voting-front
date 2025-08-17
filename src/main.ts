@@ -5,6 +5,7 @@ import 'element-plus/dist/index.css'
 
 import App from './App.vue'
 import router from './router'
+import { useUserStore } from './stores/userStore'
 
 const app = createApp(App)
 
@@ -13,3 +14,5 @@ app.use(router)
 app.use(ElementPlus)
 
 app.mount('#app')
+
+useUserStore().loadUser()
