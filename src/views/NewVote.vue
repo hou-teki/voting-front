@@ -50,41 +50,43 @@ const onSubmit = async () => {
 </script>
 
 <template>
-    <el-form :model="form" label-width="100px">
-        <el-form-item label="Vote title">
-            <el-input v-model="form.title" />
-        </el-form-item>
+    <el-card>
+        <el-form :model="form" label-width="100px">
+            <el-form-item label="Vote title">
+                <el-input v-model="form.title" />
+            </el-form-item>
 
-        <el-form-item label="Description">
-            <el-input v-model="form.description" type="textarea" />
-        </el-form-item>
+            <el-form-item label="Description">
+                <el-input v-model="form.description" type="textarea" />
+            </el-form-item>
 
-        <el-form-item label="Activity time">
-            <el-col :span="6">
-                <el-date-picker v-model="form.startDate" type="date" placeholder="Start date" style="width: 100%" />
-            </el-col>
-            <el-col :span="1">-</el-col>
-            <el-col :span="6">
-                <el-date-picker v-model="form.endDate" type="date" placeholder="End date" style="width: 100%" />
-            </el-col>
-        </el-form-item>
+            <el-form-item label="Activity time">
+                <el-col :span="6">
+                    <el-date-picker v-model="form.startDate" type="date" placeholder="Start date" style="width: 100%" />
+                </el-col>
+                <el-col :span="1">-</el-col>
+                <el-col :span="6">
+                    <el-date-picker v-model="form.endDate" type="date" placeholder="End date" style="width: 100%" />
+                </el-col>
+            </el-form-item>
 
-        <el-form-item label="Options">
-            <div v-for="(opt, idx) in form.options" :key="idx">
-                <el-form-item :prop="`options.${idx}.label`">
-                    <el-input v-model="opt.label" :placeholder="`Option ${idx + 1}`" clearable />
-                </el-form-item>
+            <el-form-item label="Options">
+                <div v-for="(opt, idx) in form.options" :key="idx">
+                    <el-form-item :prop="`options.${idx}.label`">
+                        <el-input v-model="opt.label" :placeholder="`Option ${idx + 1}`" clearable />
+                    </el-form-item>
 
-                <el-button type="danger" @click="removeOption(idx)"
-                    :disabled="form.options.length <= 2">Delete</el-button>
-            </div>
+                    <el-button type="danger" @click="removeOption(idx)"
+                        :disabled="form.options.length <= 2">Delete</el-button>
+                </div>
 
-            <el-button type="primary" @click="addOption">Add Option</el-button>
-        </el-form-item>
+                <el-button type="primary" @click="addOption">Add Option</el-button>
+            </el-form-item>
 
-        <el-form-item>
-            <el-button type="primary" @click="onSubmit">Create</el-button>
-            <el-button>Clear</el-button>
-        </el-form-item>
-    </el-form>
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit">Create</el-button>
+                <el-button>Clear</el-button>
+            </el-form-item>
+        </el-form>
+    </el-card>
 </template>

@@ -3,6 +3,9 @@ import { onMounted, ref } from 'vue'
 import type { CastVoteResponse, VoteListItem } from '@/types/vote'
 import { castVote, getVoteList } from '@/apis/votes';
 import { ElMessage } from 'element-plus';
+import { useUserStore } from '@/stores/userStore';
+
+const userStore = useUserStore()
 
 const votes = ref<VoteListItem[]>([])
 
@@ -29,7 +32,12 @@ async function handleVote(voteId: number, optionId: number) {
     loadingMap.value[key] = true
 
     try {
-        const res = await castVote({ userId: 4, voteId, optionId })
+        if (!userStore.isLogin || !userStore.id) {
+            ElMessage.error('User not logged in')
+            return
+        }
+
+        const res = await castVote({ userId: userStore.id, voteId, optionId })
 
         // update view
         applyCastResult(res)
@@ -56,24 +64,29 @@ function percent(count: number, total: number): number {
 </script>
 
 <template>
-    <el-card v-for="vote in votes" :key="vote.id" shadow="hover">
-        <template #header>
-            <h2>{{ vote.title }}</h2>
-        </template>
+    <div v-for="vote in votes" :key="vote.id">
+        <el-card shadow="hover">
+            <template #header>
+                <h2>{{ vote.title }}</h2>
+            </template>
 
-        <p>{{ vote.description }}</p>
-        <p>{{ vote.startDate }} ~ {{ vote.endDate || '-' }}</p>
+            <p>{{ vote.description }}</p>
+            <p>{{ vote.startDate }} ~ {{ vote.endDate || '-' }}</p>
 
-        <div v-for="option in vote.options" :key="option.id">
-            <el-button type="warning" @click="handleVote(vote.id, option.id)"
-                :loading="loadingMap[keyOf(vote.id, option.id)]">
-                Vote
-            </el-button>
+            <div v-for="option in vote.options" :key="option.id">
+                <div v-if="userStore.isLogin && userStore.id">
+                    <el-button type="warning" @click="handleVote(vote.id, option.id)"
+                        :loading="loadingMap[keyOf(vote.id, option.id)]">
+                        Vote
+                    </el-button>
+                </div>
 
-            <div>
-                <span>{{ option.label }}</span>
-                <el-progress :stroke-width="18" :percentage="percent(option.count, vote.total)" />
+                <div>
+                    <span>{{ option.label }}</span>
+                    <el-progress :stroke-width="18" :percentage="percent(option.count, vote.total)" />
+                </div>
             </div>
-        </div>
-    </el-card>
+        </el-card>
+        <el-divider />
+    </div>
 </template>
