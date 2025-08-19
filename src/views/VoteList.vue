@@ -67,7 +67,7 @@ function percent(count: number, total: number): number {
     <div v-for="vote in votes" :key="vote.id">
         <el-card shadow="hover">
             <template #header>
-                <h2>{{ vote.title }}</h2>
+                <h3>{{ vote.title }}</h3>
             </template>
 
             <p>{{ vote.description }}</p>
@@ -75,16 +75,14 @@ function percent(count: number, total: number): number {
 
             <div v-for="option in vote.options" :key="option.id">
                 <div v-if="userStore.isLogin && userStore.id">
-                    <el-button type="warning" @click="handleVote(vote.id, option.id)"
+                    <el-button type="success" @click="handleVote(vote.id, option.id)"
                         :loading="loadingMap[keyOf(vote.id, option.id)]">
-                        Vote
+                        {{ option.label }}
                     </el-button>
                 </div>
+                <div v-else>{{ option.label }}</div>
 
-                <div>
-                    <span>{{ option.label }}</span>
-                    <el-progress :stroke-width="18" :percentage="percent(option.count, vote.total)" />
-                </div>
+                <el-progress :stroke-width="18" :percentage="percent(option.count, vote.total)" />
             </div>
         </el-card>
         <el-divider />
