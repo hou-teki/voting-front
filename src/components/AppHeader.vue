@@ -1,52 +1,47 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/userStore';
+import { ElMessage } from 'element-plus';
 
 const userStore = useUserStore()
-
-import { ElMessage } from 'element-plus';
 
 const onLogout = () => {
     userStore.clearUser()
     ElMessage.success('Logged out successfully')
 }
-
 </script>
 
 <template>
     <el-affix>
         <el-header class="header">
-            <!-- Title -->
-            <h1>Voting App</h1>
-            <!-- Navigation -->
-            <el-menu mode="horizontal" router :default-active="$route.path" class="menu">
+            <el-menu mode="horizontal" :ellipsis="false" router :default-active="$route.path" class="menu">
+                <!-- Title -->
+                <el-menu-item>
+                    <h1>Voting App</h1>
+                </el-menu-item>
+
+                <!-- Navigation -->
                 <el-menu-item index="/votes">Vote List</el-menu-item>
                 <el-menu-item index="/new">New Vote</el-menu-item>
                 <el-menu-item index="/me">My Page</el-menu-item>
+
+                <!-- User Info -->
+                <template v-if="userStore.isLogin">
+                    <el-sub-menu index="user">
+                        <template #title>Hi, {{ userStore.username }}</template>
+                        <div class="el-menu-item" @click.stop.prevent="onLogout">Log Out</div>
+                    </el-sub-menu>
+                </template>
+                <template v-else>
+                    <el-menu-item index="/login">Log In</el-menu-item>
+                    <el-menu-item index="/signup">Sign Up</el-menu-item>
+                </template>
             </el-menu>
-            <!-- User Info -->
-            <div v-if="userStore.isLogin">
-                <span>Hi, {{ userStore.username }}</span>
-                <el-button type="primary" @click="onLogout">Log Out</el-button>
-            </div>
-            <div v-else>
-                <router-link to="/signup"><el-button type="primary" plain>Sign Up</el-button></router-link>
-                <router-link to="/login"><el-button type="primary">Log In</el-button></router-link>
-            </div>
         </el-header>
     </el-affix>
 </template>
 
 <style scoped>
-.header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    border-bottom: 1px solid var(--el-border-color);
-    display: flex;
-}
-
-.menu {
-    margin-left: 24px;
-    flex: 1;
+.el-menu--horizontal>.el-menu-item:nth-child(4) {
+    margin-right: auto;
 }
 </style>
