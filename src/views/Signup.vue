@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus';
 import { register } from '@/apis/users';
 import { useUserStore } from '@/stores/userStore';
 import type { LoginRequest } from '@/types/user';
-import { ElMessage } from 'element-plus';
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router';
 
 const router = useRouter()
 
@@ -24,7 +24,7 @@ const onSubmit = async () => {
         ElMessage.success('Registration successful')
         router.push('/votes')
     } catch (error) {
-        console.error('Registration failed:', error)
+        ElMessage.error('Registration failed')
     } finally {
         loading.value = false
     }

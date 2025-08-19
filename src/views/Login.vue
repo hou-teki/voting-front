@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus';
 import { login } from '@/apis/users';
 import { useUserStore } from '@/stores/userStore';
 import type { LoginRequest } from '@/types/user';
-import { ElMessage } from 'element-plus';
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
@@ -24,7 +24,7 @@ const onSubmit = async () => {
         ElMessage.success('Login successful')
         router.push('/votes')
     } catch (error) {
-        console.error('Login failed:', error)
+        ElMessage.error('Login failed')
     } finally {
         loading.value = false
     }
@@ -44,7 +44,7 @@ const onSubmit = async () => {
                 <el-input type="password" v-model="form.password" placeholder="Password" />
             </el-form-item>
             <!-- Button -->
-            <el-button type="primary" @click="onSubmit">Login</el-button>
+            <el-button type="primary" @click="onSubmit">Log In</el-button>
         </el-form>
     </el-card>
 </template>
