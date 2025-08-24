@@ -25,6 +25,8 @@ export type VoteListItem = {
   creatorId: number
   startDate: string
   endDate: string
+  canViewResult: boolean
+  canCast: boolean
   options: OptionWithCount[]
   total: number
 }

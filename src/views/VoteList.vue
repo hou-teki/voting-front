@@ -15,7 +15,7 @@ const loadingMap = ref<Record<string, boolean>>({})
 onMounted(async () => {
     loading.value = true
     try {
-        votes.value = await getVoteList()
+        votes.value = await getVoteList(userStore.id || null)
     } catch (error) {
         ElMessage.error('Failed to fetch vote list.')
     } finally {
@@ -53,7 +53,7 @@ async function handleVote(voteId: number, optionId: number) {
 function applyCastResult(res: CastVoteResponse) {
     votes.value = votes.value.map(old => {
         if (old.id !== res.voteId) return old
-        return { ...old, total: res.total, options: res.options }
+        return { ...old, total: res.total, options: res.options, canViewResult: true, canCast: false }
     })
 }
 
@@ -71,20 +71,33 @@ function percent(count: number, total: number): number {
             </template>
 
             <p>{{ vote.description }}</p>
-            <p>{{ vote.startDate }} ~ {{ vote.endDate || '-' }}</p>
+            <p>{{ vote.startDate || '' }} ~ {{ vote.endDate || '' }}</p>
 
-            <div v-for="option in vote.options" :key="option.id">
-                <div v-if="userStore.isLogin && userStore.id">
-                    <el-button type="success" @click="handleVote(vote.id, option.id)"
+            <div v-for="option in vote.options" :key="option.id" class="option-item">
+
+                <div v-if=vote.canCast>
+                    <el-button type="success" round @click="handleVote(vote.id, option.id)"
                         :loading="loadingMap[keyOf(vote.id, option.id)]">
                         {{ option.label }}
                     </el-button>
                 </div>
-                <div v-else>{{ option.label }}</div>
+                <div v-else>
+                    <el-button type="info" round disabled>
+                        {{ option.label }}
+                    </el-button>
+                </div>
 
-                <el-progress :stroke-width="18" :percentage="percent(option.count, vote.total)" />
+                <div v-if=vote.canViewResult>
+                    <el-progress :stroke-width="18" :percentage="percent(option.count, vote.total)" />
+                </div>
             </div>
         </el-card>
         <el-divider />
     </div>
 </template>
+
+<style scoped>
+.option-item {
+    margin-bottom: 12px;
+}
+</style>
