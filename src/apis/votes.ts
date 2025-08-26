@@ -1,12 +1,16 @@
-import type { CastVoteRequest, CastVoteResponse, VoteForm, VoteListItem } from '@/types/vote'
+import type { CastVoteRequest, CastVoteResponse, VoteForm, VotePage } from '@/types/vote'
 import http from '@/utils/http'
 
 export const createVote = (data: VoteForm) => {
   return http.post('/vote/new', data)
 }
 
-export async function getVoteList(userId: number | null): Promise<VoteListItem[]> {
-  const { data } = await http.get(`/vote/list`, { params: { userId } })
+export async function getVoteList(
+  page: number,
+  size: number,
+  userId: number | null,
+): Promise<VotePage> {
+  const { data } = await http.get(`/vote/list`, { params: { page, size, userId } })
   return data
 }
 

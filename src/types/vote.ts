@@ -18,6 +18,13 @@ export type VoteForm = {
   options: Option[]
 }
 
+export type VotePage = {
+  items: VoteListItem[]
+  page: number
+  size: number
+  hasNext: boolean
+}
+
 export type VoteListItem = {
   id: number
   title: string

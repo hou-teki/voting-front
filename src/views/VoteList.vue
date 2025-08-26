@@ -12,16 +12,28 @@ const votes = ref<VoteListItem[]>([])
 const loading = ref(false)
 const loadingMap = ref<Record<string, boolean>>({})
 
+const page = ref(0)
+const size = ref(1)
+const hasNext = ref(true)
+
 onMounted(async () => {
+    await fetchVotes()
+})
+
+const fetchVotes = async () => {
     loading.value = true
     try {
-        votes.value = await getVoteList(userStore.id || null)
+        const response = await getVoteList(page.value, size.value, userStore.id || null)
+
+        votes.value.push(...response.items)
+        page.value += 1
+        hasNext.value = response.hasNext
     } catch (error) {
         ElMessage.error('Failed to fetch vote list.')
     } finally {
         loading.value = false
     }
-})
+}
 
 const keyOf = (voteId: number, optionId: number) => {
     return `${voteId}_${optionId}`
@@ -94,6 +106,7 @@ function percent(count: number, total: number): number {
         </el-card>
         <el-divider />
     </div>
+    <el-button @click="fetchVotes" :loading="loading" v-if="hasNext">loading more</el-button>
 </template>
 
 <style scoped>
