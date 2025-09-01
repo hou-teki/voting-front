@@ -5,12 +5,8 @@ export const createVote = (data: VoteForm) => {
   return http.post('/vote/new', data)
 }
 
-export async function getVoteList(
-  page: number,
-  size: number,
-  userId: number | null,
-): Promise<VotePage> {
-  const { data } = await http.get(`/vote/list`, { params: { page, size, userId } })
+export async function getVoteList(page: number, size: number): Promise<VotePage> {
+  const { data } = await http.get(`/vote/list`, { params: { page, size } })
   return data
 }
 

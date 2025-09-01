@@ -1,3 +1,4 @@
+import { useUserStore } from '@/stores/userStore'
 import axios from 'axios'
 
 const http = axios.create({
@@ -6,19 +7,23 @@ const http = axios.create({
 })
 
 http.interceptors.request.use((config) => {
-  // const token = useUserStore().token
-  // if (token) {
-  //     config.headers.Authorization = `Bearer ${token}`
-  // }
+  const token = useUserStore().token
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
   return config
 })
 
 http.interceptors.response.use(
-  (response) => {
-    return response.data
-  },
+  (response) => response.data,
   (error) => {
-    console.log(error.response.data.message || '请求失败')
+    const status = error.response.status
+    if (status === 401) {
+      const store = useUserStore()
+      store.clearUser()
+    } else {
+      console.log(error.response.data.message || 'failed')
+    }
     return Promise.reject(error)
   },
 )

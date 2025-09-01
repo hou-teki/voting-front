@@ -3,6 +3,11 @@ export type LoginRequest = {
   password: string
 }
 
+export type LoginResponse = {
+  token: string
+  user: UserDto
+}
+
 export type UserDto = {
   id: number
   username: string
@@ -11,4 +16,5 @@ export type UserDto = {
 export type userState = {
   id: number | null
   username: string | null
+  token: string | null
 }

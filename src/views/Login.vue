@@ -20,7 +20,7 @@ const onSubmit = async () => {
     try {
         const res = await login(form)
 
-        useUserStore().setUser(res)
+        useUserStore().setUser(res.token, res.user)
         ElMessage.success('Login successful')
         router.push('/votes')
     } catch (error) {

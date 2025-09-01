@@ -1,15 +1,15 @@
-import type { LoginRequest, UserDto } from '@/types/user'
+import type { LoginRequest, LoginResponse } from '@/types/user'
 import type { VoteItemDto } from '@/types/vote'
 import http from '@/utils/http'
 
-export async function register(req: LoginRequest): Promise<UserDto> {
+export async function register(req: LoginRequest): Promise<LoginResponse> {
   const { data } = await http.post('/user/register', req)
-  return data
+  return data as LoginResponse
 }
 
-export async function login(req: LoginRequest): Promise<UserDto> {
+export async function login(req: LoginRequest): Promise<LoginResponse> {
   const { data } = await http.post('/user/login', req)
-  return data
+  return data as LoginResponse
 }
 
 export async function logout() {

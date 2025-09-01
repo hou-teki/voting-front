@@ -1,37 +1,52 @@
-import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type { UserDto, userState } from '@/types/user'
 
-const STORAGE_KEY = 'user'
+const USER_STORAGE_KEY = 'user'
+const TOKEN_STORAGE_KEY = 'token'
 
 export const useUserStore = defineStore('user', {
   state: (): userState => ({
     id: null,
     username: null,
+    token: null,
   }),
+
   getters: {
     isLogin(state) {
-      return !!state.id
+      return !!state.token && !!state.id
     },
   },
+
   actions: {
-    setUser(user: UserDto) {
+    setUser(token: string, user: UserDto) {
       this.id = user.id
       this.username = user.username
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(user))
+      this.token = token
+
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user))
+      localStorage.setItem(TOKEN_STORAGE_KEY, token)
     },
+
     loadUser() {
-      const user = localStorage.getItem(STORAGE_KEY)
-      if (!user) return
+      const user = localStorage.getItem(USER_STORAGE_KEY)
+      const token = localStorage.getItem(TOKEN_STORAGE_KEY)
+
+      if (!user || !token) return
       try {
         const parsedUser = JSON.parse(user) as UserDto
-        this.setUser(parsedUser)
-      } catch {}
+        this.setUser(token, parsedUser)
+      } catch {
+        this.clearUser()
+      }
     },
+
     clearUser() {
       this.id = null
       this.username = null
-      localStorage.removeItem(STORAGE_KEY)
+      this.token = null
+
+      localStorage.removeItem(USER_STORAGE_KEY)
+      localStorage.removeItem(TOKEN_STORAGE_KEY)
     },
   },
 })

@@ -23,7 +23,7 @@ onMounted(async () => {
 const fetchVotes = async () => {
     loading.value = true
     try {
-        const response = await getVoteList(page.value, size.value, userStore.id || null)
+        const response = await getVoteList(page.value, size.value)
 
         votes.value.push(...response.items)
         page.value += 1
