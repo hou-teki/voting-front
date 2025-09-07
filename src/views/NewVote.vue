@@ -1,25 +1,19 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { ElMessage } from 'element-plus'
-import type { VoteForm } from '@/types/vote'
+import type { VoteRequest } from '@/types/vote'
 import { createVote } from '@/apis/votes'
 import { useUserStore } from '@/stores/userStore'
-
-let uid = 0
-const newOption = () => ({
-    id: ++uid,
-    label: '',
-})
 
 const userStore = useUserStore()
 
 // do not use same name with ref
-const form = reactive({
+const form: VoteRequest = reactive({
     title: '',
     description: '',
     startDate: '',
     endDate: '',
-    options: [newOption(), newOption()],
+    options: ['', ''],
 })
 
 const onSubmit = async () => {
@@ -29,8 +23,7 @@ const onSubmit = async () => {
     }
 
     try {
-        const formWithCreatorId: VoteForm = { ...form, creatorId: userStore.id }
-        await createVote(formWithCreatorId)
+        await createVote(form)
         ElMessage.success('Vote created successfully')
         clearForm()
     } catch (error) {
@@ -39,7 +32,7 @@ const onSubmit = async () => {
 }
 
 function addOption() {
-    form.options.push(newOption())
+    form.options.push('')
 }
 
 function removeOption(index: number) {
@@ -52,7 +45,7 @@ function clearForm() {
     form.description = ''
     form.startDate = ''
     form.endDate = ''
-    form.options = [newOption(), newOption()]
+    form.options = ['', '']
 }
 </script>
 
@@ -84,8 +77,8 @@ function clearForm() {
             <el-form-item label="Options">
                 <el-space direction="vertical" alignment="start">
                     <div v-for="(opt, idx) in form.options" :key="idx">
-                        <el-form-item :prop="`options.${idx}.label`">
-                            <el-input v-model="opt.label" :placeholder="`Option ${idx + 1}`" clearable />
+                        <el-form-item :prop="`options.${idx}`">
+                            <el-input v-model="form.options[idx]" :placeholder="`Option ${idx + 1}`" clearable />
                         </el-form-item>
 
                         <el-button type="danger" @click="removeOption(idx)"

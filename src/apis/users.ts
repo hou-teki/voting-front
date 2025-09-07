@@ -1,14 +1,14 @@
 import type { LoginRequest, LoginResponse } from '@/types/user'
-import type { VoteItemDto } from '@/types/vote'
+import type { VoteResponse } from '@/types/vote'
 import http from '@/utils/http'
 
 export async function register(req: LoginRequest): Promise<LoginResponse> {
-  const { data } = await http.post('/user/register', req)
+  const { data } = await http.post('/auth/register', req)
   return data as LoginResponse
 }
 
 export async function login(req: LoginRequest): Promise<LoginResponse> {
-  const { data } = await http.post('/user/login', req)
+  const { data } = await http.post('/auth/login', req)
   return data as LoginResponse
 }
 
@@ -16,7 +16,7 @@ export async function logout() {
   return null
 }
 
-export async function getMyCreatedVotes(userId: number): Promise<VoteItemDto[]> {
-  const { data } = await http.get('/my/created', { params: { userId } })
+export async function getMyCreatedVotes(userId: number): Promise<VoteResponse[]> {
+  const { data } = await http.get('/user/created', { params: { userId } })
   return data
 }

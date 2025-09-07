@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import type { VoteItemDto, VoteListItem } from '@/types/vote'
+import type { VoteResponse } from '@/types/vote'
 import { useUserStore } from '@/stores/userStore'
 import { getMyCreatedVotes } from '@/apis/users'
 import { ElMessage } from 'element-plus'
 
-const myCreatedVotes = ref<VoteItemDto[]>([])
+const myCreatedVotes = ref<VoteResponse[]>([])
 const loading = ref(false)
 
 const userStore = useUserStore()

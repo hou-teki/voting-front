@@ -1,61 +1,35 @@
-export type Option = {
-  id: number
-  label: string
+export type VoteRequest = {
+  title: string
+  description: string
+  startDate: string
+  endDate: string
+  options: string[]
 }
 
-export type OptionWithCount = {
+export type VoteResponse = {
+  id: number
+  title: string
+  description: string
+  creatorId: number
+  startDate: string
+  endDate: string
+  options: VoteOptionResponse[]
+  totalVotes: number
+  canViewResult: boolean
+  canCast: boolean
+}
+
+export type VoteOptionResponse = {
   id: number
   label: string
   count: number
 }
 
-export type VoteForm = {
-  title: string
-  description: string
-  creatorId: number
-  startDate: string
-  endDate: string
-  options: Option[]
-}
-
 export type VotePage = {
-  items: VoteListItem[]
-  page: number
-  size: number
-  hasNext: boolean
-}
-
-export type VoteListItem = {
-  id: number
-  title: string
-  description: string
-  creatorId: number
-  startDate: string
-  endDate: string
-  canViewResult: boolean
-  canCast: boolean
-  options: OptionWithCount[]
-  total: number
-}
-
-export type VoteItemDto = {
-  id: number
-  title: string
-  description: string
-  creatorId: number
-  startDate: string
-  endDate: string
-  options: Option[]
-}
-
-export type CastVoteRequest = {
-  userId: number
-  voteId: number
-  optionId: number
-}
-
-export type CastVoteResponse = {
-  voteId: number
-  total: number
-  options: OptionWithCount[]
+  content: VoteResponse[]
+  pageable: {
+    pageNumber: number
+    pageSize: number
+  }
+  last: boolean
 }

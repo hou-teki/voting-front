@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import type { CastVoteResponse, VoteListItem } from '@/types/vote'
+import type { VoteResponse } from '@/types/vote'
 import { castVote, getVoteList } from '@/apis/votes';
 import { ElMessage } from 'element-plus';
 import { useUserStore } from '@/stores/userStore';
 
 const userStore = useUserStore()
 
-const votes = ref<VoteListItem[]>([])
+const votes = ref<VoteResponse[]>([])
 
 const loading = ref(false)
 const loadingMap = ref<Record<string, boolean>>({})
@@ -25,9 +25,9 @@ const fetchVotes = async () => {
     try {
         const response = await getVoteList(page.value, size.value)
 
-        votes.value.push(...response.items)
+        votes.value.push(...response.content)
         page.value += 1
-        hasNext.value = response.hasNext
+        hasNext.value = !response.last
     } catch (error) {
         ElMessage.error('Failed to fetch vote list.')
     } finally {
@@ -49,7 +49,7 @@ async function handleVote(voteId: number, optionId: number) {
             return
         }
 
-        const res = await castVote({ userId: userStore.id, voteId, optionId })
+        const res = await castVote(voteId, optionId)
 
         // update view
         applyCastResult(res)
@@ -62,10 +62,16 @@ async function handleVote(voteId: number, optionId: number) {
     }
 }
 
-function applyCastResult(res: CastVoteResponse) {
+function applyCastResult(res: VoteResponse) {
     votes.value = votes.value.map(old => {
-        if (old.id !== res.voteId) return old
-        return { ...old, total: res.total, options: res.options, canViewResult: true, canCast: false }
+        if (old.id !== res.id) return old
+        return {
+            ...old,
+            total: res.totalVotes,
+            options: res.options,
+            canViewResult: res.canViewResult,
+            canCast: res.canCast
+        }
     })
 }
 
@@ -100,7 +106,7 @@ function percent(count: number, total: number): number {
                 </div>
 
                 <div v-if=vote.canViewResult>
-                    <el-progress :stroke-width="18" :percentage="percent(option.count, vote.total)" />
+                    <el-progress :stroke-width="18" :percentage="percent(option.count, vote.totalVotes)" />
                 </div>
             </div>
         </el-card>
