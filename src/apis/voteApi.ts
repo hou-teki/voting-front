@@ -12,6 +12,6 @@ export async function getVoteList(page: number, size: number): Promise<VotePage>
 }
 
 export async function castVote(voteId: number, optionId: number): Promise<VoteResponse> {
-  const { data } = await http.post('/vote/cast', { voteId, optionId })
+  const { data } = await http.post(`/vote/cast/${voteId}/${optionId}`)
   return data
 }

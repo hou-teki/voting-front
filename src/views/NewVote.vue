@@ -2,7 +2,7 @@
 import { reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import type { VoteRequest } from '@/types/vote'
-import { createVote } from '@/apis/votes'
+import { createVote } from '@/apis/voteApi'
 import { useUserStore } from '@/stores/userStore'
 
 const userStore = useUserStore()

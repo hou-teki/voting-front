@@ -11,6 +11,9 @@ export type LoginResponse = {
 export type UserDto = {
   id: number
   username: string
+  ageRange: string
+  gender: string
+  department: string
 }
 
 export type userState = {

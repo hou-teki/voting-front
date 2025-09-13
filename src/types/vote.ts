@@ -32,4 +32,5 @@ export type VotePage = {
     pageSize: number
   }
   last: boolean
+  totalPages: number
 }

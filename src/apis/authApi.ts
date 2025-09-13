@@ -1,5 +1,4 @@
 import type { LoginRequest, LoginResponse } from '@/types/user'
-import type { VoteResponse } from '@/types/vote'
 import http from '@/utils/http'
 
 export async function register(req: LoginRequest): Promise<LoginResponse> {
@@ -14,9 +13,4 @@ export async function login(req: LoginRequest): Promise<LoginResponse> {
 
 export async function logout() {
   return null
-}
-
-export async function getMyCreatedVotes(userId: number): Promise<VoteResponse[]> {
-  const { data } = await http.get('/user/created', { params: { userId } })
-  return data
 }

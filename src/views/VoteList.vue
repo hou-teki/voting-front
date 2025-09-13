@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import type { VoteResponse } from '@/types/vote'
-import { castVote, getVoteList } from '@/apis/votes';
+import { castVote, getVoteList } from '@/apis/voteApi';
 import { ElMessage } from 'element-plus';
 import { useUserStore } from '@/stores/userStore';
 
@@ -67,7 +67,7 @@ function applyCastResult(res: VoteResponse) {
         if (old.id !== res.id) return old
         return {
             ...old,
-            total: res.totalVotes,
+            totalVotes: res.totalVotes,
             options: res.options,
             canViewResult: res.canViewResult,
             canCast: res.canCast

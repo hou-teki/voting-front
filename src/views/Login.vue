@@ -2,7 +2,7 @@
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
-import { login } from '@/apis/users';
+import { login } from '@/apis/authApi';
 import { useUserStore } from '@/stores/userStore';
 import type { LoginRequest } from '@/types/user';
 
