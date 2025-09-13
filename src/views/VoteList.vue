@@ -13,7 +13,7 @@ const loading = ref(false)
 const loadingMap = ref<Record<string, boolean>>({})
 
 const page = ref(0)
-const size = ref(1)
+const size = ref(5)
 const hasNext = ref(true)
 
 onMounted(async () => {
@@ -93,7 +93,7 @@ function percent(count: number, total: number): number {
 
             <div v-for="option in vote.options" :key="option.id" class="option-item">
 
-                <div v-if=vote.canCast>
+                <div v-if="vote.canCast">
                     <el-button type="success" round @click="handleVote(vote.id, option.id)"
                         :loading="loadingMap[keyOf(vote.id, option.id)]">
                         {{ option.label }}
@@ -105,7 +105,7 @@ function percent(count: number, total: number): number {
                     </el-button>
                 </div>
 
-                <div v-if=vote.canViewResult>
+                <div v-if="vote.canViewResult">
                     <el-progress :stroke-width="18" :percentage="percent(option.count, vote.totalVotes)" />
                 </div>
             </div>

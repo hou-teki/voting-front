@@ -3,7 +3,7 @@ import { onMounted, ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 
 import { useUserStore } from '@/stores/userStore'
-import { getMyCreatedVotes, getMyParticapedVotes, getMyProfile, updateMyProfile } from '@/apis/userApi'
+import { getMyCreatedVotes, getMyParticipatedVotes, getMyProfile, updateMyProfile } from '@/apis/userApi'
 import type { UserDto } from '@/types/user'
 import type { VoteResponse } from '@/types/vote'
 
@@ -104,7 +104,7 @@ const fetchMyCreatedVotes = async () => {
 const fetchMyParticipatedVotes = async () => {
     loading.value = true
     try {
-        const response = await getMyParticapedVotes(currentPageParticipated.value - 1, pageSizeParticipated.value)
+        const response = await getMyParticipatedVotes(currentPageParticipated.value - 1, pageSizeParticipated.value)
         myParticipatedVotes.value = response.content
         totalParticipated.value = response.totalPages
     } catch (error) {

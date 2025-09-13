@@ -17,7 +17,7 @@ export async function getMyCreatedVotes(page: number, size: number): Promise<Vot
   return data
 }
 
-export async function getMyParticapedVotes(page: number, size: number): Promise<VotePage> {
+export async function getMyParticipatedVotes(page: number, size: number): Promise<VotePage> {
   const { data } = await http.get('/user/participated', { params: { page, size } })
   return data
 }
