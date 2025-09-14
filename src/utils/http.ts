@@ -1,5 +1,6 @@
 import { useUserStore } from '@/stores/userStore'
 import axios from 'axios'
+import { ElMessage } from 'element-plus'
 
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080/api',
@@ -17,13 +18,15 @@ http.interceptors.request.use((config) => {
 http.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    const status = error.response.status
+    const status = error.response?.status
     if (status === 401) {
       const store = useUserStore()
       store.clearUser()
-    } else {
-      console.log(error.response.data.message || 'failed')
     }
+
+    const backendMsg = error.response?.data?.message
+    const msg = backendMsg || error.message || 'Request failed'
+    ElMessage.error(msg)
     return Promise.reject(error)
   },
 )
