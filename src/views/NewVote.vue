@@ -65,11 +65,13 @@ function clearForm() {
             <!-- start date and end date -->
             <el-form-item label="Activity time">
                 <el-col :span="6">
-                    <el-date-picker v-model="form.startDate" type="date" placeholder="Start date" style="width: 100%" />
+                    <el-date-picker v-model="form.startDate" type="date" value-format="YYYY-MM-DD"
+                        placeholder="Start date" style="width: 100%" />
                 </el-col>
                 <el-col :span="1">-</el-col>
                 <el-col :span="6">
-                    <el-date-picker v-model="form.endDate" type="date" placeholder="End date" style="width: 100%" />
+                    <el-date-picker v-model="form.endDate" type="date" value-format="YYYY-MM-DD" placeholder="End date"
+                        style="width: 100%" />
                 </el-col>
             </el-form-item>
 
