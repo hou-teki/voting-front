@@ -6,6 +6,9 @@ import { useUserStore } from '@/stores/userStore'
 import { getMyCreatedVotes, getMyParticipatedVotes, getMyProfile, updateMyProfile } from '@/apis/userApi'
 import type { UserDto } from '@/types/user'
 import type { VoteResponse } from '@/types/vote'
+import ProfileDescriptions from '@/components/ProfileDescriptions.vue'
+import ProfileEditDialog from '@/components/ProfileEditDialog.vue'
+import VotesTable from '@/components/VotesTable.vue'
 
 const formLabelWidth = '140px'
 
@@ -132,90 +135,38 @@ const onCurrentChangeParticipated = (page: number) => {
         <el-empty description="You have not logged in yet." />
     </div>
     <div v-else>
-        <el-descriptions title="My Profile" :column="2" border>
-            <template #extra>
-                <el-button type="primary" @click="dialogFormVisible = true">Update</el-button>
-            </template>
+        <ProfileDescriptions :my-profile="myProfile" :age-range-labels="ageRangeLabels">
+          <template #extra>
+            <el-button type="primary" @click="dialogFormVisible = true">Update</el-button>
+          </template>
+        </ProfileDescriptions>
 
-            <el-descriptions-item>
-                <template #label>Username</template>
-                {{ myProfile.username }}
-            </el-descriptions-item>
-
-            <el-descriptions-item>
-                <template #label>Gender</template>
-                {{ myProfile.gender }}
-            </el-descriptions-item>
-
-            <el-descriptions-item>
-                <template #label>Age Range</template>
-                {{ ageRangeLabels[myProfile.ageRange] }}
-            </el-descriptions-item>
-
-            <el-descriptions-item>
-                <template #label>Department</template>
-                {{ myProfile.department }}
-            </el-descriptions-item>
-        </el-descriptions>
-
-        <el-dialog v-model="dialogFormVisible" title="Update Profile" width="500">
-            <el-form :model="myProfile">
-                <el-form-item label="Gender" :label-width="formLabelWidth">
-                    <el-radio-group v-model="myProfile.gender">
-                        <el-radio value="MALE">Male</el-radio>
-                        <el-radio value="FEMALE">Female</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-
-                <el-form-item label="Age Range" :label-width="formLabelWidth">
-                    <el-select v-model="myProfile.ageRange" placeholder="Please select a age range">
-                        <el-option label="  ~19" value="TEEN" />
-                        <el-option label="20~29" value="TWENTIES" />
-                        <el-option label="30~39" value="THIRTIES" />
-                        <el-option label="40~49" value="FORTIES" />
-                        <el-option label="50~  " value="FIFTY_PLUS" />
-                    </el-select>
-                </el-form-item>
-
-                <el-form-item label="Department" :label-width="formLabelWidth">
-                    <el-input v-model="myProfile.department" autocomplete="off" />
-                </el-form-item>
-            </el-form>
-
-            <template #footer>
-                <div class="dialog-footer">
-                    <el-button @click="cancelUpdate">Cancel</el-button>
-                    <el-button type="primary" @click="confirmUpdate">Confirm</el-button>
-                </div>
-            </template>
-        </el-dialog>
+        <ProfileEditDialog v-model="dialogFormVisible" :my-profile="myProfile" :form-label-width="formLabelWidth"
+          @cancel="cancelUpdate" @confirm="confirmUpdate" />
 
         <div>
             <el-collapse v-model="activeNames">
                 <!-- My Created Votes -->
                 <el-collapse-item title="My Created Votes" name="1">
-                    <el-scrollbar>
-                        <el-table :data="myCreatedVotes" stripe style="width: 100%">
-                            <el-table-column prop="title" label="Title" />
-                            <el-table-column prop="description" label="Description" />
-                        </el-table>
-                    </el-scrollbar>
-                    <el-pagination layout="prev, pager, next" :page-count="totalCreated" :page-size="pageSizeCreated"
-                        :current-page="currentPageCreated" @current-change="onCurrentChangeCreated" />
+                    <VotesTable
+                      :data="myCreatedVotes"
+                      :page-count="totalCreated"
+                      :page-size="pageSizeCreated"
+                      :current-page="currentPageCreated"
+                      @page-change="onCurrentChangeCreated"
+                    />
                 </el-collapse-item>
 
                 <!-- My Participated Votes -->
                 <el-collapse-item title="My Polls" name="2">
-                    <el-scrollbar>
-                        <el-table :data="myParticipatedVotes" stripe style="width: 100%">
-                            <el-table-column prop="title" label="Title" />
-                            <el-table-column prop="description" label="Description" />
-                            <el-table-column prop="options[0].label" label="My Choice" />
-                        </el-table>
-                        <el-pagination layout="prev, pager, next" :page-count="totalParticipated"
-                            :page-size="pageSizeParticipated" :current-page="currentPageParticipated"
-                            @current-change="onCurrentChangeParticipated" />
-                    </el-scrollbar>
+                    <VotesTable
+                      :data="myParticipatedVotes"
+                      :show-my-choice="true"
+                      :page-count="totalParticipated"
+                      :page-size="pageSizeParticipated"
+                      :current-page="currentPageParticipated"
+                      @page-change="onCurrentChangeParticipated"
+                    />
                 </el-collapse-item>
             </el-collapse>
         </div>

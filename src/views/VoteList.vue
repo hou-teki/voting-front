@@ -4,12 +4,13 @@ import type { VoteResponse } from '@/types/vote'
 import { castVote, getVoteList } from '@/apis/voteApi';
 import { ElMessage } from 'element-plus';
 import { useUserStore } from '@/stores/userStore';
+import VoteCard from '@/components/VoteCard.vue'
 
 const userStore = useUserStore()
 
 const votes = ref<VoteResponse[]>([])
 
-const loading = ref(false)
+const loadingVotes = ref(false)
 const loadingMap = ref<Record<string, boolean>>({})
 
 const page = ref(0)
@@ -21,17 +22,16 @@ onMounted(async () => {
 })
 
 const fetchVotes = async () => {
-    loading.value = true
+    loadingVotes.value = true
     try {
         const response = await getVoteList(page.value, size.value)
-
         votes.value.push(...response.content)
         page.value += 1
         hasNext.value = !response.last
     } catch (error) {
         ElMessage.error('Failed to fetch vote list.')
     } finally {
-        loading.value = false
+        loadingVotes.value = false
     }
 }
 
@@ -75,48 +75,13 @@ function applyCastResult(res: VoteResponse) {
     })
 }
 
-function percent(count: number, total: number): number {
-    return total > 0 ? Math.round((count / total) * 100) : 0
-}
-
 </script>
 
 <template>
     <div v-for="vote in votes" :key="vote.id">
-        <el-card shadow="hover">
-            <template #header>
-                <h3>{{ vote.title }}</h3>
-            </template>
-
-            <p>{{ vote.description }}</p>
-            <p>{{ vote.startDate || '' }} ~ {{ vote.endDate || '' }}</p>
-
-            <div v-for="option in vote.options" :key="option.id" class="option-item">
-
-                <div v-if="vote.canCast">
-                    <el-button type="success" round @click="handleVote(vote.id, option.id)"
-                        :loading="loadingMap[keyOf(vote.id, option.id)]">
-                        {{ option.label }}
-                    </el-button>
-                </div>
-                <div v-else>
-                    <el-button type="info" round disabled>
-                        {{ option.label }}
-                    </el-button>
-                </div>
-
-                <div v-if="vote.canViewResult">
-                    <el-progress :stroke-width="18" :percentage="percent(option.count, vote.totalVotes)" />
-                </div>
-            </div>
-        </el-card>
+        <VoteCard :vote="vote" :loading-map="loadingMap" @cast="handleVote" />
         <el-divider />
     </div>
-    <el-button @click="fetchVotes" :loading="loading" v-if="hasNext">loading more</el-button>
+    <el-button @click="fetchVotes" :loading="loadingVotes" v-if="hasNext">loading more</el-button>
+    <el-empty v-else-if="votes.length === 0" description="No votes yet." />
 </template>
-
-<style scoped>
-.option-item {
-    margin-bottom: 12px;
-}
-</style>
