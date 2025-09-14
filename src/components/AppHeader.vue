@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useUserStore } from '@/stores/userStore';
+import { useAuthStore } from '@/stores/authStore';
 import { ElMessage } from 'element-plus';
 
-const userStore = useUserStore()
+const userStore = useAuthStore()
 
 const onLogout = () => {
     userStore.clearUser()

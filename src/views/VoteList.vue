@@ -3,10 +3,10 @@ import { onMounted, ref } from 'vue'
 import type { VoteResponse } from '@/types/vote'
 import { castVote, getVoteList } from '@/apis/voteApi';
 import { ElMessage } from 'element-plus';
-import { useUserStore } from '@/stores/userStore';
+import { useAuthStore } from '@/stores/authStore';
 import VoteCard from '@/components/VoteCard.vue'
 
-const userStore = useUserStore()
+const userStore = useAuthStore()
 
 const votes = ref<VoteResponse[]>([])
 

@@ -4,7 +4,7 @@ import type { UserDto, userState } from '@/types/user'
 const USER_STORAGE_KEY = 'user'
 const TOKEN_STORAGE_KEY = 'token'
 
-export const useUserStore = defineStore('user', {
+export const useAuthStore = defineStore('user', {
   state: (): userState => ({
     id: null,
     username: null,

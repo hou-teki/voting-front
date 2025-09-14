@@ -3,7 +3,7 @@ import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { register } from '@/apis/authApi';
-import { useUserStore } from '@/stores/userStore';
+import { useAuthStore } from '@/stores/authStore';
 import type { LoginRequest } from '@/types/user';
 
 const router = useRouter()
@@ -20,7 +20,7 @@ const onSubmit = async () => {
     try {
         const res = await register(form)
 
-        useUserStore().setUser(res.token, res.user)
+        useAuthStore().setUser(res.token, res.user)
         ElMessage.success('Registration successful')
         router.push('/votes')
     } catch (error) {

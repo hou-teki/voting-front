@@ -1,4 +1,4 @@
-import { useUserStore } from '@/stores/userStore'
+import { useAuthStore } from '@/stores/authStore'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 
@@ -8,7 +8,7 @@ const http = axios.create({
 })
 
 http.interceptors.request.use((config) => {
-  const token = useUserStore().token
+  const token = useAuthStore().token
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
@@ -20,7 +20,7 @@ http.interceptors.response.use(
   (error) => {
     const status = error.response?.status
     if (status === 401) {
-      const store = useUserStore()
+      const store = useAuthStore()
       store.clearUser()
     }
 

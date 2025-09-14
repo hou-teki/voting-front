@@ -3,9 +3,9 @@ import { reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import type { VoteRequest } from '@/types/vote'
 import { createVote } from '@/apis/voteApi'
-import { useUserStore } from '@/stores/userStore'
+import { useAuthStore } from '@/stores/authStore'
 
-const userStore = useUserStore()
+const userStore = useAuthStore()
 
 // do not use same name with ref
 const form: VoteRequest = reactive({

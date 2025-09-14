@@ -4,7 +4,7 @@ import App from './App.vue'
 import router from './router'
 
 import { createPinia } from 'pinia'
-import { useUserStore } from './stores/userStore'
+import { useAuthStore } from './stores/authStore'
 
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
@@ -17,4 +17,4 @@ app.use(ElementPlus)
 
 app.mount('#app')
 
-useUserStore().loadUser()
+useAuthStore().loadUser()

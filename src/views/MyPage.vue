@@ -2,10 +2,11 @@
 import { onMounted, ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 
-import { useUserStore } from '@/stores/userStore'
+import { useAuthStore } from '@/stores/authStore'
 import { getMyCreatedVotes, getMyParticipatedVotes, getMyProfile, updateMyProfile } from '@/apis/userApi'
 import type { UserDto } from '@/types/user'
 import type { VoteResponse } from '@/types/vote'
+
 import ProfileDescriptions from '@/components/ProfileDescriptions.vue'
 import ProfileEditDialog from '@/components/ProfileEditDialog.vue'
 import VotesTable from '@/components/VotesTable.vue'
@@ -45,7 +46,7 @@ const totalParticipated = ref(0)
 const loading = ref(false)
 const dialogFormVisible = ref(false)
 
-const userStore = useUserStore()
+const userStore = useAuthStore()
 
 
 onMounted(async () => {
@@ -117,7 +118,6 @@ const fetchMyParticipatedVotes = async () => {
     }
 }
 
-
 const onCurrentChangeCreated = (page: number) => {
     currentPageCreated.value = page
     fetchMyCreatedVotes()
@@ -136,37 +136,27 @@ const onCurrentChangeParticipated = (page: number) => {
     </div>
     <div v-else>
         <ProfileDescriptions :my-profile="myProfile" :age-range-labels="ageRangeLabels">
-          <template #extra>
-            <el-button type="primary" @click="dialogFormVisible = true">Update</el-button>
-          </template>
+            <template #extra>
+                <el-button type="primary" @click="dialogFormVisible = true">Update</el-button>
+            </template>
         </ProfileDescriptions>
 
         <ProfileEditDialog v-model="dialogFormVisible" :my-profile="myProfile" :form-label-width="formLabelWidth"
-          @cancel="cancelUpdate" @confirm="confirmUpdate" />
+            @cancel="cancelUpdate" @confirm="confirmUpdate" />
 
         <div>
             <el-collapse v-model="activeNames">
                 <!-- My Created Votes -->
                 <el-collapse-item title="My Created Votes" name="1">
-                    <VotesTable
-                      :data="myCreatedVotes"
-                      :page-count="totalCreated"
-                      :page-size="pageSizeCreated"
-                      :current-page="currentPageCreated"
-                      @page-change="onCurrentChangeCreated"
-                    />
+                    <VotesTable :data="myCreatedVotes" :page-count="totalCreated" :page-size="pageSizeCreated"
+                        :current-page="currentPageCreated" @page-change="onCurrentChangeCreated" />
                 </el-collapse-item>
 
                 <!-- My Participated Votes -->
                 <el-collapse-item title="My Polls" name="2">
-                    <VotesTable
-                      :data="myParticipatedVotes"
-                      :show-my-choice="true"
-                      :page-count="totalParticipated"
-                      :page-size="pageSizeParticipated"
-                      :current-page="currentPageParticipated"
-                      @page-change="onCurrentChangeParticipated"
-                    />
+                    <VotesTable :data="myParticipatedVotes" :show-my-choice="true" :page-count="totalParticipated"
+                        :page-size="pageSizeParticipated" :current-page="currentPageParticipated"
+                        @page-change="onCurrentChangeParticipated" />
                 </el-collapse-item>
             </el-collapse>
         </div>
